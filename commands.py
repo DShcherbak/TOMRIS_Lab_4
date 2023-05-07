@@ -1,4 +1,28 @@
 from enum import Enum
+from term import Term, applyOperator
+
+
+def _calcTermValue(term: Term, assignments: dict) -> Term:
+    if term is None:
+        return None
+    if term.isLeaf():
+        if term.value is not None:
+            return Term(value=term.value)
+        elif term.name in assignments:
+            return assignments[term.name]
+        else:
+            return term
+    else:
+        lhs = _calcTermValue(term.lhs)
+        rhs = _calcTermValue(term.rhs)
+        if lhs is None:
+            return rhs
+        if rhs is None:
+            return lhs
+        if lhs.hasValue() and rhs.hasValue():
+            return Term(value=applyOperator(lhs.value, rhs.value, term.value))
+        else:
+            return Term(operator=term.operator, lhs=lhs, rhs=rhs)
 
 
 class CommandType(Enum):
@@ -23,14 +47,18 @@ class Command:
             self.commands = args
 
 
+    def _getNewAssignment(self, newAssignment):
+        name = newAssignment[0]
+        term = newAssignment[1]
+        self.assignments[name] = _calcTermValue(term=term, assignments=self.assignments)
+        pass
+
+
     def concat(self, command):
         assert(self.type == CommandType.Do and command.type == CommandType.Do)
-        self.assignments.concat(command.assignments)
-        self.simplifyCommands()
+        for assignment in command.assignments:
+            self._getNewAssignment(newAssignment = assignment)
 
-
-    def simplifyCommands(self):
-        pass 
 
 def Eps():
     return Command(CommandType.Empty, [])
