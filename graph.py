@@ -26,7 +26,7 @@ class Graph:
     def __init__(self, commands):
         self.vertices = {}
         start = 0
-        self.add_vertex(start)
+        self.addVertex(start)
         self.buildCommandsGraph(commands, start)
 
     

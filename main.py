@@ -1,21 +1,21 @@
 from graph import MNA, Graph
 
-def get_text():
+def getText():
     return ""
 
-def get_commands(program):
-    return ([], [])
+def getCommands(program):
+    return []
 
-def multiply_commands(commands, varaibles):
-    return ([], [])
+def multiplyCommands(commands, varaibles):
+    return []
 
-def print_graph(graph):
+def printGraph(graph):
     print("Hello, world")
 
 if __name__ == "__main__":
-    program = get_text()
-    (commands, variables) = get_commands(program)
-    (commands, variables) = multiply_commands(commands, variables)
+    program = getText()
+    (commands) = getCommands(program)
+    (commands) = multiplyCommands(commands)
     graph = Graph(commands)
     invariants = MNA(graph)
-    print_graph(graph, invariants, variables)
+    printGraph(graph, invariants)
