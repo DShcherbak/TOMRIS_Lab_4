@@ -64,7 +64,7 @@ class Graph:
 
     def createDoGraph(self, command, start):
         end = self.add_vertex(start + 1)
-        edge = Edge(One(), command.operation)
+        edge = Edge(One(), command.assignments)
         self.add_edge(id, end, edge)
         return end
     

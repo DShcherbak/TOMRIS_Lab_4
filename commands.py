@@ -70,5 +70,11 @@ def reverse(condition):
     return revCondition
 
 
+def flip(condition):
+    rev = reverse(condition)
+    rev.lhs, rev.rhs = rev.rhs, rev.lhs
+    return rev 
+
+
 def One():
     return Condition(ConditionType.TRUE, None, None)
