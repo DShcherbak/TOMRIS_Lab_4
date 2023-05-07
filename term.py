@@ -11,3 +11,9 @@ class Term:
         self.operator = operator
         self.lhs = lhs
         self.rhs = rhs
+
+
+class ValueType(Enum):
+    Value = 1
+    Var = 2
+    Term = 3

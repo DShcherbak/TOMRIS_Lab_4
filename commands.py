@@ -12,7 +12,7 @@ class Command:
     def __init__(self, type, args, condition = None, elseCommands = None):
         self.type = type
         if type == CommandType.Do:
-            self.operation = args
+            self.assignments = args
         elif type == CommandType.If:
             self.condition = condition
             self.commands = args
