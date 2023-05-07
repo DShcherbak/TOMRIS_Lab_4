@@ -107,7 +107,7 @@ def constructS(graph):
     result = []
     for cur in graph.vertices:
         vertex = graph.vertices[cur]
-        for (next, edge) in vertex.adgacent:
+        for (next, edge) in vertex.adjacent:
             result.append((cur, edge.condition, edge.operator, next))
     return result
 
