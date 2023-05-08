@@ -1,17 +1,9 @@
 import pyparsing as prs
 
-from enum import Enum
-
+import commands
+from keywords import keywords, Keyword
 import parse_actions as ac
 
-
-class Keyword(Enum):
-    IF = 0
-    ELSE = 1
-    WHILE = 2
-
-
-keywords: dict[Keyword, str] = {Keyword.IF: 'if', Keyword.ELSE: 'else', Keyword.WHILE: 'while'}
 
 _identifier = prs.Word(prs.alphas).set_parse_action(ac.identifier)
 _integer = prs.pyparsing_common.integer.set_parse_action(ac.integer)
@@ -53,6 +45,8 @@ _program_name = prs.Group(_identifier + _params)
 _program_code = prs.Group(_program_name + prs.OneOrMore(_command))('program').set_parse_action(ac.commands_list)
 
 
-def parse(code: str):
-    prs.ParserElement.ignoreWhitespace = True
-    return _program_code.parseString(code)
+def parse(code: str) -> list[commands.Command]:
+    # prs.ParserElement.ignoreWhitespace = True
+    res = _program_code.parseString(code)
+    ac.declared_vars.clear()
+    return list(res)

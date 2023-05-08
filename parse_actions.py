@@ -1,8 +1,15 @@
 import commands
 import term
 
+from keywords import keywords
+
+
+declared_vars = []
+
 
 def identifier(s) -> term.Term:
+    if s in keywords.values():
+        raise ValueError("Variable has same name as one of the keywords")
     return term.Term(name=s[0])
 
 
@@ -47,9 +54,22 @@ def math_expr(*args) -> term.Term:
     return res if res is not None else first_operand
 
 
+def _check_variables(t: term.Term) -> bool:
+    if t.name is not None and t.name not in declared_vars:
+        return False
+    if t.lhs is not None and not _check_variables(t.lhs):
+        return False
+    if t.rhs is not None and not _check_variables(t.rhs):
+        return False
+    return True
+
+
 def assignment(*args) -> commands.Command:
     tokens = args[2][0]
+    if not _check_variables(tokens[2]):
+        raise ValueError("There is usage of not declared variable somewhere")
     assignment_dic = {tokens[0].name: tokens[2]}
+    declared_vars.append(tokens[0].name)
     return commands.Command(type=commands.CommandType.Do, args=assignment_dic)
 
 

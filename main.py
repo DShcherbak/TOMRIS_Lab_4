@@ -1,5 +1,5 @@
 from graph import MNA, Graph
-
+import parser
 
 FILENAME = 'input.txt'
 
@@ -11,7 +11,7 @@ def getText() -> str:
 
 
 def getCommands(program: str):
-    return []
+    return parser.parse(program)
 
 
 def multiplyCommands(commands):
