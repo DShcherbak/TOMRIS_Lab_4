@@ -4,6 +4,7 @@ from enum import Enum
 
 import parse_actions as ac
 
+
 class Keyword(Enum):
     IF = 0
     ELSE = 1
@@ -14,11 +15,11 @@ keywords: dict[Keyword, str] = {Keyword.IF: 'if', Keyword.ELSE: 'else', Keyword.
 
 _identifier = prs.Word(prs.alphas).set_parse_action(ac.identifier)
 _integer = prs.pyparsing_common.integer.set_parse_action(ac.integer)
-_var_or_num = _identifier | _integer
-math_op = prs.one_of(['+', '-', '*', '/'])
-_math_expr = prs.Group(_var_or_num + math_op + _var_or_num)('math_expr').set_parse_action(ac.math_expr)
-
-_operand = _math_expr | _integer | _identifier
+_math_expr = prs.Forward()
+_math_expr_brackets = prs.Group('(' + _math_expr + ')').set_parse_action(ac.bracketed_expr)
+_operand = _integer | _identifier | _math_expr_brackets
+_math_op = prs.one_of(['+', '-', '*', '/'])
+_math_expr <<= prs.Group(_operand + prs.ZeroOrMore(_math_op + _operand))('math_expr').set_parse_action(ac.math_expr)
 
 _assignment = prs.Group(_identifier + prs.Literal(':=') + _operand + prs.Literal(';')).set_parse_action(ac.assignment)
 
@@ -40,9 +41,9 @@ _else_block = prs.Group(
     '{' + prs.OneOrMore(_command) + '}'
 )('else_block').set_results_name('else_block')
 
-_if_statement << prs.Group(_if_block + prs.Optional(_else_block))('if_statement').set_parse_action(ac.if_statement)
+_if_statement <<= prs.Group(_if_block + prs.Optional(_else_block))('if_statement').set_parse_action(ac.if_statement)
 
-_while_loop << prs.Group(keywords[Keyword.WHILE] + _bool_expr + '{' + prs.OneOrMore(_command) + '}')('while_loop')\
+_while_loop <<= prs.Group(keywords[Keyword.WHILE] + _bool_expr + '{' + prs.OneOrMore(_command) + '}')('while_loop')\
     .set_parse_action(ac.while_statement)
 
 _args_list = prs.delimited_list(_identifier)
