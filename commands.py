@@ -1,4 +1,6 @@
 from enum import Enum
+import os
+
 from term import Term, applyOperator
 
 
@@ -46,6 +48,36 @@ class Command:
             self.condition = condition
             self.commands = args
 
+    def __repr__(self):
+        type_str = ''
+        match self.type:
+            case CommandType.Do:
+                type_str = 'assignment'
+            case CommandType.If:
+                type_str = 'if'
+            case CommandType.While:
+                type_str = 'while'
+            case _:
+                type_str = 'NotKnown'
+
+        def cmds_str(cmds):
+            separated_commands = ''
+            match cmds:
+                case list():
+                    separated_commands = \
+                        f'{os.linesep.join(["    " + str(cmd) for cmd in cmds])}'
+                case dict():
+                    key = list(cmds.keys())[0]
+                    separated_commands = \
+                        f'\n    {str(key) + " := " + str(cmds[key])}\n'
+                case _:
+                    pass
+            return f'[\n{separated_commands}\n]'
+
+        return f'Command<{type_str}>' \
+               f'{"(" + str(self.condition) + ")" if self.type in (CommandType.If, CommandType.While) is not None else ""}' \
+               f'{cmds_str(self.assignments if self.type == CommandType.Do else self.commands)}' \
+               f'{os.linesep + "else" + cmds_str(self.elseCommands) if self.type == CommandType.If and hasattr(self, "elseCommands") else ""}'
 
     def _getNewAssignment(self, newAssignment):
         name = newAssignment[0]
@@ -79,6 +111,25 @@ class Condition:
         self.operator = operator
         self.lhs = lhs
         self.rhs = rhs
+
+    def __repr__(self):
+        operator_str = ''
+        match self.operator:
+            case ConditionType.EQ:
+                operator_str = '=='
+            case ConditionType.LT:
+                operator_str = 'LT'
+            case ConditionType.GT:
+                operator_str = 'GT'
+            case ConditionType.LQ:
+                operator_str = 'LE'
+            case ConditionType.GQ:
+                operator_str = 'GE'
+            case ConditionType.NQ:
+                operator_str = '!='
+            case _:
+                operator_str = 'NotFound'
+        return f'Condition({self.lhs} {operator_str} {self.rhs})'
 
     
 def reverse(condition):
