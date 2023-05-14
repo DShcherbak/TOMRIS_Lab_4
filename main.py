@@ -10,7 +10,17 @@ def multiplyCommands(commands):
     return []
 
 def printGraph(graph, invariants):
-    print("Hello, world")
+    for v in graph.vertices:
+        vertex = graph.vertices[v]
+        print("Vertex:", v)
+        print("Edges:")
+        for (adj, edge) in vertex.adjacent:
+            print("::", v, " -> ", adj, " : ", edge)
+        print("Invariants:")
+        for condition in invariants[v]:
+            print("##", condition)
+        print("--------------")
+    print("======================")
 
 if __name__ == "__main__":
     program = getText()

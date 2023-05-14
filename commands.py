@@ -20,7 +20,7 @@ def _calcTermValue(term: Term, assignments: dict) -> Term:
         if rhs is None:
             return lhs
         if lhs.hasValue() and rhs.hasValue():
-            return Term(value=applyOperator(lhs.value, rhs.value, term.value))
+            return Term(value=applyOperator(lhs.value, rhs.value, term.operator))
         else:
             return Term(operator=term.operator, lhs=lhs, rhs=rhs)
 
@@ -96,6 +96,13 @@ def reverse(condition):
     elif condition.operator == ConditionType.NQ:
         revCondition.operator = ConditionType.EQ
     return revCondition
+
+def compatible(oper1, oper2):
+    return oper1 == oper2 \
+            or (oper1 == ConditionType.EQ and (oper2 == ConditionType.LQ or oper2 == ConditionType.GQ)) \
+            or (oper2 == ConditionType.EQ and (oper1 == ConditionType.LQ or oper1 == ConditionType.GQ)) \
+
+    
 
 
 def flip(condition):
