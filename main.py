@@ -1,16 +1,26 @@
 from graph import MNA, Graph
+import parser
 
-def getText():
-    return ""
+FILENAME = 'input.txt'
 
-def getCommands(program):
-    return []
+
+def getText() -> str:
+    """ Reads and returns program code from file. """
+    with open(FILENAME, 'r') as file:
+        return file.read()
+
+
+def getCommands(program: str):
+    return parser.parse(program)
+
 
 def multiplyCommands(commands):
     return []
 
+
 def printGraph(graph, invariants):
     print("Hello, world")
+
 
 if __name__ == "__main__":
     program = getText()

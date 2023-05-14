@@ -25,6 +25,27 @@ class Term:
         self.value = value
         self.name = name
 
+    def __repr__(self):
+        operator_str = ''
+        match self.operator:
+            case TermOperator.Plus:
+                operator_str = '+'
+            case TermOperator.Minus:
+                operator_str = '-'
+            case TermOperator.Multiply:
+                operator_str = '*'
+            case TermOperator.Divide:
+                operator_str = "/"
+            case _:
+                operator_str = 'NotFound'
+        name = str(self.name) if self.name is not None else ""
+        value = str(self.value) if self.value is not None else ""
+        op = f'({self.lhs} {operator_str} {self.rhs})' if self.operator is not None else ""
+        return f'Term<' \
+               f'{("name = " + str(name)) if name else ""}' \
+               f'{("value = " + str(value)) if value else ""}' \
+               f'>{op if op else ""}'
+
     def isLeaf(self):
         return self.lhs is None and self.rhs is None
     
